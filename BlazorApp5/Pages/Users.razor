@@ -1,0 +1,62 @@
+﻿@page "/"
+
+@inject IStringLocalizer<Resources.Administration> _localizer;
+
+<PageTitle>@_localizer["Users"]</PageTitle>
+
+<MudText Typo="Typo.h5" Color="Color.Primary">@_localizer["Users"]</MudText>
+
+<MudTable AllowUnsorted="false" Bordered="true" Filter="new Func<UserSummary, bool>(Search)" Hover="true" Items="_model"
+            Striped="true">
+    <ToolBarContent>
+        <MudTextField @bind-Value="_searchString" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search" Clearable="true"
+                        FullWidth="false" Immediate="true" Placeholder="@_localizer["Search for users"]">
+        </MudTextField>
+        <MudSpacer />
+        <MudButton Color="Color.Secondary" OnClick="RefreshAsync" StartIcon="@Icons.Material.Filled.Refresh"
+                    Variant="Variant.Filled">
+            @_localizer["Refresh"]
+        </MudButton>
+        <MudButton Class="ml-1" Color="Color.Primary" OnClick="NewAsync" StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled">
+            @_localizer["New"]
+        </MudButton>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>
+            <MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<UserSummary, object>(i => i.Name ?? string.Empty)">
+                @_localizer["Name"]
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserSummary, object>(i => i.Email!)">@_localizer["Email"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserSummary, object>(i => i.StatusText)">@_localizer["Status"]</MudTableSortLabel></MudTh>
+        <MudTh>@_localizer["Actions"]</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTh DataLabel="@_localizer["Name"]">
+            <MudHighlighter Text="@context.Name" HighlightedText="@_searchString" />
+        </MudTh>
+        <MudTh DataLabel="@_localizer["Email"]">
+            <MudHighlighter Text="@context.Email" HighlightedText="@_searchString" />
+        </MudTh>
+        <MudTh DataLabel="@_localizer["Status"]">
+            <MudHighlighter Text="@context.StatusText" HighlightedText="@_searchString" />
+            <MudButton Class="ml-2" Color="Color.Secondary" DisableElevation="true" OnClick="@(async e => await ResendAsync(@context))"
+                    Size="Size.Small" Variant="Variant.Filled">
+                @_localizer["Resend"]
+            </MudButton>
+        </MudTh>
+        <MudTh DataLabel="@_localizer["Actions"]">
+            <MudButton Color="Color.Primary" DisableElevation="true" OnClick="@(async e => await ViewOrEditAsync(@context))"
+                        Variant="Variant.Filled">
+                @_localizer["Edit"]
+            </MudButton>
+            <MudButton Class="ml-1" Color="Color.Tertiary" DisableElevation="true" OnClick="@(async e => await DeleteAsync(@context))"
+                    Variant="Variant.Filled">
+                @_localizer["Delete"]
+            </MudButton>
+        </MudTh>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

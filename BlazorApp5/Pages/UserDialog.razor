@@ -1,0 +1,31 @@
+﻿@inject IStringLocalizer<Resources.Administration> _localizer;
+
+<EditForm Model="@_model" OnValidSubmit="OnValidSubmitAsync">
+    <DataAnnotationsValidator />
+    <MudDialog>
+        <DialogContent>
+            <MudTextField @bind-Value="_model!.Email" For="@(() => _model!.Email)" Label="Email"
+                ReadOnly="@_emailAddressReadOnly" />
+            <MudTextField @bind-Value="_model!.Name" For="@(() => _model!.Name)" Label="Name" />
+            <MudText Class="mt-4 mb-2">Role Membership</MudText>
+            <MudTable Class="mb-1" Dense="true" Items="@_model!.Roles">
+                <HeaderContent>
+                    <MudTh><MudTableSortLabel SortBy="new Func<UserRole, object>(i => i.Name)">@_localizer["Role"]</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortBy="new Func<UserRole, object>(i => i.Active)">@_localizer["Member?"]</MudTableSortLabel></MudTh>
+                </HeaderContent>
+                <RowTemplate Context="role">
+                    <MudTh DataLabel="@_localizer["Role"]">@role.Name</MudTh>
+                    <MudTh DataLabel="@_localizer["Member?"]">
+                        <MudCheckBox T="bool" Checked="@role.Active" CheckedChanged="@(i => OnRoleCheckChanged(@role, i))" />
+                    </MudTh>
+                </RowTemplate>
+            </MudTable>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="OnCancel">
+                @_localizer["Cancel"]
+            </MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Success" Variant="Variant.Filled">@_localizer["Save"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
