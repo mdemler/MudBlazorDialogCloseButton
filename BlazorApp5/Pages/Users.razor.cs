@@ -11,6 +11,7 @@ namespace BlazorApp5.Pages
         };
         private List<Role>? _roles = new List<Role>
         {
+            new Role { Id = Guid.NewGuid(), Name = "Role1" }
         };
         private string? _searchString;
 
